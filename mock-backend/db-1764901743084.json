@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@example.com",
+      "password": "admin123",
+      "role": "ADMIN",
+      "isApproved": "YES"
+    },
+    {
+      "id": 2,
+      "email": "retailer@example.com",
+      "password": "test123",
+      "role": "RETAILER",
+      "isApproved": "NO"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Paracetamol 500mg",
+      "price": 50,
+      "stock_quantity": 10
+    },
+    {
+      "id": 2,
+      "name": "Amoxicillin 250mg",
+      "price": 120,
+      "stock_quantity": 8
+    }
+  ],
+  "orders": []
+}

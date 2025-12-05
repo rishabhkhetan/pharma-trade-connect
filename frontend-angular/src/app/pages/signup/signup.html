@@ -1,0 +1,140 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-8">
+  <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
+      <p class="text-gray-600">Sign up for PharmaTrade Connect</p>
+    </div>
+
+    <!-- Signup Form -->
+    <form (ngSubmit)="onSubmit()" #signupForm="ngForm" class="space-y-6">
+      <!-- Name Field -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+          Full Name
+        </label>
+        <input
+          id="name"
+          type="text"
+          name="name"
+          [(ngModel)]="formData.name"
+          required
+          minlength="3"
+          #nameInput="ngModel"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="John Doe"
+          [disabled]="loading"
+        />
+        <div *ngIf="nameInput.invalid && nameInput.touched" class="text-red-600 text-sm mt-1">
+          <span *ngIf="nameInput.errors?.['required']">Name is required</span>
+          <span *ngIf="nameInput.errors?.['minlength']">Name must be at least 3 characters</span>
+        </div>
+      </div>
+
+      <!-- Email Field -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+          Email Address
+        </label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="formData.email"
+          required
+          email
+          #emailInput="ngModel"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="your@email.com"
+          [disabled]="loading"
+        />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="text-red-600 text-sm mt-1">
+          <span *ngIf="emailInput.errors?.['required']">Email is required</span>
+          <span *ngIf="emailInput.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+          Password
+        </label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="formData.password"
+          required
+          minlength="6"
+          #passwordInput="ngModel"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="••••••••"
+          [disabled]="loading"
+        />
+        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="text-red-600 text-sm mt-1">
+          <span *ngIf="passwordInput.errors?.['required']">Password is required</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Password must be at least 6 characters</span>
+        </div>
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div>
+        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
+          Confirm Password
+        </label>
+        <input
+          id="confirmPassword"
+          type="password"
+          name="confirmPassword"
+          [(ngModel)]="formData.confirmPassword"
+          required
+          #confirmPasswordInput="ngModel"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="••••••••"
+          [disabled]="loading"
+        />
+        <div *ngIf="confirmPasswordInput.invalid && confirmPasswordInput.touched" class="text-red-600 text-sm mt-1">
+          <span *ngIf="confirmPasswordInput.errors?.['required']">Please confirm your password</span>
+        </div>
+        <div *ngIf="formData.password && formData.confirmPassword && formData.password !== formData.confirmPassword" class="text-red-600 text-sm mt-1">
+          Passwords do not match
+        </div>
+      </div>
+
+      <!-- Success Message -->
+      <div *ngIf="successMessage" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+        {{ successMessage }}
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        [disabled]="signupForm.invalid || formData.password !== formData.confirmPassword || loading"
+        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span *ngIf="!loading">Sign Up</span>
+        <span *ngIf="loading">Creating account...</span>
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="mt-6 text-center text-sm text-gray-600">
+      Already have an account?
+      <a routerLink="/login" class="text-blue-600 hover:text-blue-700 font-medium">
+        Sign in
+      </a>
+    </div>
+
+    <!-- Info Box -->
+    <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <p class="text-xs text-blue-800">
+        <strong>Note:</strong> Your account will require admin approval before you can log in.
+      </p>
+    </div>
+  </div>
+</div>
