@@ -239,15 +239,5 @@ Consider splitting handlers, models, db access, and middleware into packages as 
 
 ---
 
-## License & contact
 
-This project is provided as an example. Add a license file (e.g., MIT) if you plan to open-source it.
 
-If you want, I can:
-- Convert this README to a downloadable `README.md` file in the project folder,
-- Split the `main.go` into packages and provide a refactor, or
-- Add examples for environment-based configuration and `docker-compose`.
-
----
-
-*Generated README for the provided Go server code.*
