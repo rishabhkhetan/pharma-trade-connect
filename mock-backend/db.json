@@ -1,0 +1,61 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "name": "Admin User",
+      "role": "ADMIN",
+      "isApproved": "YES",
+      "createdAt": "2025-12-01T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "email": "john@pharmacy.com",
+      "password": "password123",
+      "name": "John Doe",
+      "role": "RETAILER",
+      "isApproved": "YES",
+      "createdAt": "2025-12-02T14:30:00Z"
+    },
+    {
+      "id": "3",
+      "email": "sarah@clinic.com",
+      "password": "password123",
+      "name": "Sarah Smith",
+      "role": "RETAILER",
+      "isApproved": "YES",
+      "createdAt": "2025-12-03T09:15:00Z"
+    },
+    {
+      "name": "random1",
+      "email": "random1@gmail.com",
+      "password": "qwertyuiop",
+      "role": "RETAILER",
+      "isApproved": "YES",
+      "createdAt": "2025-12-05T05:21:36.231Z",
+      "id": "5"
+    },
+    {
+      "id": "fc33",
+      "name": "r13",
+      "email": "r13@gmail.com",
+      "password": "zxcvbnm",
+      "role": "RETAILER",
+      "isApproved": "YES",
+      "hasLicense": true,
+      "createdAt": "2025-12-09T04:33:45.110Z"
+    },
+    {
+      "id": "aebf",
+      "name": "random4",
+      "email": "random4@gmail.com",
+      "password": "asdcxz",
+      "role": "RETAILER",
+      "isApproved": "NO",
+      "hasLicense": true,
+      "licenseUrl": null,
+      "createdAt": "2025-12-09T05:09:30.732Z"
+    }
+  ]
+}
