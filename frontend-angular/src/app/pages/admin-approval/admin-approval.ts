@@ -12,9 +12,9 @@ import { AuthService, User } from '../../services/auth.service';
 })
 export class AdminApprovalComponent implements OnInit {
   pendingUsers: User[] = [];
-  loading: boolean = false;
-  errorMessage: string = '';
-  successMessage: string = '';
+  loading = false;
+  errorMessage = '';
+  successMessage = '';
   currentUser: User | null = null;
 
   constructor(
@@ -36,10 +36,9 @@ export class AdminApprovalComponent implements OnInit {
         this.pendingUsers = users;
         this.loading = false;
       },
-      error: (error) => {
+      error: () => {
         this.errorMessage = 'Failed to load pending users';
         this.loading = false;
-        console.error('Error loading users:', error);
       }
     });
   }
@@ -51,16 +50,11 @@ export class AdminApprovalComponent implements OnInit {
       this.authService.approveUser(user.id).subscribe({
         next: () => {
           this.successMessage = `User "${user.name}" approved successfully!`;
-          this.loadPendingUsers(); // Refresh list
-          
-          // Clear success message after 3 seconds
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 3000);
+          this.loadPendingUsers();
+          setTimeout(() => (this.successMessage = ''), 3000);
         },
-        error: (error) => {
+        error: () => {
           this.errorMessage = 'Failed to approve user';
-          console.error('Error approving user:', error);
         }
       });
     }
@@ -73,16 +67,11 @@ export class AdminApprovalComponent implements OnInit {
       this.authService.deleteUser(user.id).subscribe({
         next: () => {
           this.successMessage = `User "${user.name}" deleted successfully!`;
-          this.loadPendingUsers(); // Refresh list
-          
-          // Clear success message after 3 seconds
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 3000);
+          this.loadPendingUsers();
+          setTimeout(() => (this.successMessage = ''), 3000);
         },
-        error: (error) => {
+        error: () => {
           this.errorMessage = 'Failed to delete user';
-          console.error('Error deleting user:', error);
         }
       });
     }

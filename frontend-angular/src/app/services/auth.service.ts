@@ -8,9 +8,13 @@ export interface User {
   email: string;
   password?: string;
   name: string;
-  role: 'ADMIN' | 'RETAILER';
+  role: 'ADMIN' | 'RETAILER' | 'CLINIC';
   isApproved: 'YES' | 'NO';
   createdAt?: string;
+
+  // NEW FIELD (mock now, real URL later)
+  hasLicense?: boolean;      
+  licenseUrl?: string | null;  
 }
 
 export interface LoginResponse {
@@ -23,7 +27,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3001/users';
+  private apiUrl = 'http://localhost:3000/users';
   private readonly TOKEN_KEY = 'pt_token';
   private readonly USER_KEY = 'pt_user';
 
