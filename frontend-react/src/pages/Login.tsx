@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function Login() {
   const [mode, setMode] = useState<"LOGIN" | "SIGNUP">("LOGIN");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"ADMIN" | "RETAILER">("RETAILER");
+  const [role, setRole] = useState<"ADMIN" | "RETAILER">("RETAILER"); // login only
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [licenseNumber, setLicenseNumber] = useState("");
@@ -12,12 +13,12 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Password Validation
+  // Password check
   const validatePassword = (pass: string) => {
     if (pass.length < 8) return "Password must be at least 8 characters";
-    if (!/[A-Z]/.test(pass)) return "Must contain at least one uppercase letter";
-    if (!/[0-9]/.test(pass)) return "Must contain at least one number";
-    if (!/[!@#$%^&*]/.test(pass)) return "Must contain at least one symbol (!@#$%^&*)";
+    if (!/[A-Z]/.test(pass)) return "Must contain an uppercase letter";
+    if (!/[0-9]/.test(pass)) return "Must contain a number";
+    if (!/[!@#$%^&*]/.test(pass)) return "Must contain a symbol (!@#$%^&*)";
     return null;
   };
 
@@ -25,50 +26,67 @@ export default function Login() {
     e.preventDefault();
     setError("");
 
-    // SIGNUP VALIDATION
+    // SIGNUP VALIDATION — only Retailer is allowed
     if (mode === "SIGNUP") {
       const err = validatePassword(password);
       if (err) return setError(err);
 
-      if (password !== confirmPass) {
-        return setError("Passwords do not match");
-      }
+      if (password !== confirmPass) return setError("Passwords do not match");
 
-      // Retailer-specific validation
-      if (role === "RETAILER") {
-        if (!licenseNumber.trim()) {
-          return setError("License Number is required for Retailers.");
-        }
-        if (!licenseFile) {
-          return setError("You must upload a License/Approval PDF or Image.");
-        }
-      }
+      if (!licenseNumber.trim()) return setError("License Number required");
+      if (!licenseFile) return setError("Upload License Document");
     }
 
     setLoading(true);
 
     try {
-      // For Real Backend (multipart form)
-      const formData = new FormData();
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("role", role);
+      // ---------------- LOGIN ----------------
+      if (mode === "LOGIN") {
+        const res = await axios.post("http://localhost:8080/login", {
+          email,
+          password,
+          role, // admin or retailer
+        });
 
-      if (mode === "SIGNUP") {
-        formData.append("name", name);
+        const user = res.data.user;
 
-        if (role === "RETAILER") {
-          formData.append("license_number", licenseNumber);
-          formData.append("license_file", licenseFile!);
+        if (user.is_approved !== "YES" && user.role === "RETAILER") {
+          setError("Your account is not approved yet.");
+          setLoading(false);
+          return;
+        }
+
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Redirect based on role
+        if (user.role === "ADMIN") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/dashboard";
         }
       }
 
-      console.log("Form Submitted:", Object.fromEntries(formData));
+      // ---------------- SIGNUP ----------------
+      else {
+        const form = new FormData();
+        form.append("name", name);
+        form.append("email", email);
+        form.append("password", password);
 
-      alert(`${mode} successful`);
+        // SIGNUP is always Retailer
+        form.append("role", "RETAILER");
+        form.append("license_number", licenseNumber);
+        form.append("license_file", licenseFile!);
 
-    } catch {
-      setError("Something went wrong.");
+        await axios.post("http://localhost:8080/signup", form);
+
+        alert("Signup successful! Wait for admin approval.");
+        setMode("LOGIN");
+      }
+
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Something went wrong.");
     }
 
     setLoading(false);
@@ -80,38 +98,36 @@ export default function Login() {
 
         <h1 className="text-3xl font-bold text-blue-600 text-center">PharmaTrade</h1>
         <p className="text-center text-gray-500 mb-6">
-          {mode === "LOGIN" ? "Secure Portal Login" : "Create New Account"}
+          {mode === "LOGIN" ? "Secure Portal Login" : "Retailer Registration"}
         </p>
 
         {error && (
-          <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-center">
-            {error}
-          </div>
+          <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-center">{error}</div>
         )}
 
         <form onSubmit={handleSubmit}>
 
-          {/* SIGNUP ONLY: NAME FIELD */}
+          {/* ---------------- SIGNUP FIELDS ---------------- */}
           {mode === "SIGNUP" && (
-            <div className="mb-4">
-              <label className="block mb-1 font-medium text-gray-700">Full Name</label>
-              <input
-                type="text"
-                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
+            <>
+              <div className="mb-4">
+                <label className="font-medium">Full Name</label>
+                <input
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            </>
           )}
 
           {/* EMAIL */}
           <div className="mb-4">
-            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <label className="font-medium">Email</label>
             <input
               type="email"
-              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400"
-              placeholder="user@pharma.com"
+              className="w-full border p-2 rounded"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -119,105 +135,94 @@ export default function Login() {
 
           {/* PASSWORD */}
           <div className="mb-4">
-            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <label className="font-medium">Password</label>
             <input
               type="password"
-              className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400"
-              placeholder="Password123!"
+              className="w-full border p-2 rounded"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
-          {/* CONFIRM PASSWORD */}
+          {/* CONFIRM PASSWORD (SIGNUP ONLY) */}
           {mode === "SIGNUP" && (
             <div className="mb-4">
-              <label className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+              <label className="font-medium">Confirm Password</label>
               <input
                 type="password"
-                className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400"
-                placeholder="Re-enter Password"
+                className="w-full border p-2 rounded"
                 value={confirmPass}
                 onChange={(e) => setConfirmPass(e.target.value)}
               />
             </div>
           )}
 
-          {/* RETAILER-ONLY FIELDS */}
-          {mode === "SIGNUP" && role === "RETAILER" && (
+          {/* ---------------- LOGIN ROLE TOGGLE ---------------- */}
+          {mode === "LOGIN" && (
+            <div className="mb-6">
+              <p className="font-medium mb-2">Login as</p>
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setRole("ADMIN")}
+                  className={`px-4 py-2 rounded-lg border ${
+                    role === "ADMIN" ? "bg-blue-600 text-white" : "bg-gray-200"
+                  }`}
+                >
+                  Admin
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRole("RETAILER")}
+                  className={`px-4 py-2 rounded-lg border ${
+                    role === "RETAILER" ? "bg-blue-600 text-white" : "bg-gray-200"
+                  }`}
+                >
+                  Retailer
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ---------------- RETAILER SIGNUP FIELDS ---------------- */}
+          {mode === "SIGNUP" && (
             <>
-              {/* LICENSE NUMBER */}
               <div className="mb-4">
-                <label className="block mb-1 font-medium text-gray-700">License Number</label>
+                <label className="font-medium">License Number</label>
                 <input
                   type="text"
-                  className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-400"
-                  placeholder="Enter License Number"
+                  className="w-full border p-2 rounded"
                   value={licenseNumber}
                   onChange={(e) => setLicenseNumber(e.target.value)}
                 />
               </div>
 
-              {/* LICENSE DOCUMENT UPLOAD */}
               <div className="mb-4">
-                <label className="block mb-1 font-medium text-gray-700">
-                  Upload License Document (PDF or Image)
-                </label>
-
+                <label className="font-medium">Upload License Document</label>
                 <input
                   type="file"
-                  accept=".pdf, .jpg, .jpeg, .png"
+                  accept=".pdf,.jpg,.jpeg,.png"
                   onChange={(e) => setLicenseFile(e.target.files?.[0] || null)}
-                  className="w-full border p-2 rounded bg-white"
+                  className="w-full border p-2 rounded"
                 />
-
-                {licenseFile && (
-                  <p className="text-sm text-green-600 mt-1">
-                    Uploaded: {licenseFile.name}
-                  </p>
-                )}
               </div>
             </>
           )}
-
-          {/* ROLE TOGGLE */}
-          <div className="mb-6">
-            <p className="text-gray-700 font-medium mb-2">Select Role</p>
-
-            <div className="flex gap-4">
-              <button
-                type="button"
-                onClick={() => setRole("ADMIN")}
-                className={`px-4 py-2 rounded-lg border transition 
-                  ${role === "ADMIN" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"}`}
-              >
-                Admin
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setRole("RETAILER")}
-                className={`px-4 py-2 rounded-lg border transition 
-                  ${role === "RETAILER" ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"}`}
-              >
-                Retailer
-              </button>
-            </div>
-          </div>
 
           {/* SUBMIT */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:bg-blue-300"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg mt-2"
           >
             {loading ? "Processing..." : mode === "LOGIN" ? "Sign In" : "Create Account"}
           </button>
         </form>
 
-        {/* TOGGLE LOGIN / SIGNUP */}
-        <p className="text-center mt-4 text-gray-600">
-          {mode === "LOGIN" ? "Don’t have an account?" : "Already have an account?"}
+        {/* SWITCH LOGIN / SIGNUP */}
+        <p className="text-center mt-4 text-gray-700">
+          {mode === "LOGIN" ? "Don't have an account?" : "Already registered?"}
           <button
             className="text-blue-600 font-semibold ml-2"
             onClick={() => {
