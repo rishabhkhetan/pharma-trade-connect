@@ -6,8 +6,11 @@
       "password": "admin123",
       "name": "Admin User",
       "role": "ADMIN",
-      "isApproved": "YES",
-      "createdAt": "2025-12-01T10:00:00Z"
+      "is_approved": true,
+      "company_name": "Company X",
+      "license_url": null,
+      "created_at": "2025-12-01T10:00:00Z",
+      "isApproved": "YES"
     },
     {
       "id": "2",
@@ -15,47 +18,80 @@
       "password": "password123",
       "name": "John Doe",
       "role": "RETAILER",
-      "isApproved": "YES",
-      "createdAt": "2025-12-02T14:30:00Z"
+      "is_approved": true,
+      "company_name": "John Pharmacy",
+      "license_url": null,
+      "created_at": "2025-12-02T14:30:00Z",
+      "isApproved": "YES"
     },
     {
-      "id": "3",
-      "email": "sarah@clinic.com",
-      "password": "password123",
-      "name": "Sarah Smith",
-      "role": "RETAILER",
+      "id": "2416",
+      "name": "random",
+      "email": "random@gmail.com",
+      "password": "1234567890",
+      "role": "CLINIC",
       "isApproved": "YES",
-      "createdAt": "2025-12-03T09:15:00Z"
-    },
-    {
-      "name": "random1",
-      "email": "random1@gmail.com",
-      "password": "qwertyuiop",
-      "role": "RETAILER",
-      "isApproved": "YES",
-      "createdAt": "2025-12-05T05:21:36.231Z",
-      "id": "5"
-    },
-    {
-      "id": "fc33",
-      "name": "r13",
-      "email": "r13@gmail.com",
-      "password": "zxcvbnm",
-      "role": "RETAILER",
-      "isApproved": "YES",
-      "hasLicense": true,
-      "createdAt": "2025-12-09T04:33:45.110Z"
-    },
-    {
-      "id": "aebf",
-      "name": "random4",
-      "email": "random4@gmail.com",
-      "password": "asdcxz",
-      "role": "RETAILER",
-      "isApproved": "NO",
       "hasLicense": true,
       "licenseUrl": null,
-      "createdAt": "2025-12-09T05:09:30.732Z"
+      "createdAt": "2025-12-09T17:12:45.881Z"
     }
-  ]
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Paracetamol 500mg",
+      "brand": "Acme Pharma",
+      "manufacturer": "Acme",
+      "batch_no": "B-001",
+      "expiry": "2026-06-30T00:00:00.000Z",
+      "price": 50,
+      "stock_quantity": 100
+    },
+    {
+      "id": "2",
+      "name": "Amoxicillin 250mg",
+      "brand": "BioLabs",
+      "manufacturer": "BioLabs",
+      "batch_no": "B-101",
+      "expiry": "2026-09-30T00:00:00.000Z",
+      "price": 120,
+      "stock_quantity": 50
+    }
+  ],
+  "orders": [
+    {
+      "id": "e585",
+      "user_id": 1,
+      "total_amount": 400,
+      "status": "PENDING",
+      "created_at": "2025-12-09T16:37:06.699Z",
+      "items": [
+        {
+          "product_id": 1,
+          "quantity": 8,
+          "unit_price": 50
+        }
+      ]
+    },
+    {
+      "id": "a695",
+      "user_id": 1,
+      "total_amount": 170,
+      "status": "PENDING",
+      "created_at": "2025-12-10T02:42:50.268Z",
+      "items": [
+        {
+          "product_id": 1,
+          "quantity": 1,
+          "unit_price": 50
+        },
+        {
+          "product_id": 2,
+          "quantity": 1,
+          "unit_price": 120
+        }
+      ]
+    }
+  ],
+  "order_items": []
 }

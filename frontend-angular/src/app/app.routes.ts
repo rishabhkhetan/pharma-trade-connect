@@ -7,23 +7,40 @@ export const routes: Routes = [
 
   {
     path: 'login',
-    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent)
+    loadComponent: () =>
+      import('./pages/login/login').then(m => m.LoginComponent)
   },
 
   {
     path: 'signup',
-    loadComponent: () => import('./pages/signup/signup').then(m => m.SignupComponent)
+    loadComponent: () =>
+      import('./pages/signup/signup').then(m => m.SignupComponent)
   },
-
+  {
+    path: 'cart',
+    loadComponent: () => import('./pages/cart/cart').then(m => m.CartComponent),
+    // Optional guard: canActivate: [authGuard]
+  },
   {
     path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
+    loadComponent: () =>
+      import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
     canActivate: [authGuard]
+  },
+
+  // ⭐ NEW — Product Dashboard Route
+  {
+    path: 'products',
+    loadComponent: () =>
+      import('./pages/product-dashboard/product-dashboard')
+        .then(m => m.ProductDashboardComponent),
+    canActivate: [authGuard]   // Only logged-in users can view products
   },
 
   {
     path: 'admin-approval',
-    loadComponent: () => import('./pages/admin-approval/admin-approval').then(m => m.AdminApprovalComponent),
+    loadComponent: () =>
+      import('./pages/admin-approval/admin-approval').then(m => m.AdminApprovalComponent),
     canActivate: [adminGuard]
   },
 

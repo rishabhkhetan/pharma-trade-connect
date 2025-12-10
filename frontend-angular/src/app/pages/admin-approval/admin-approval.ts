@@ -47,7 +47,8 @@ export class AdminApprovalComponent implements OnInit {
     if (!user.id) return;
 
     if (confirm(`Approve user "${user.name}" (${user.email})?`)) {
-      this.authService.approveUser(user.id).subscribe({
+      // assert non-null id when passing to service
+      this.authService.approveUser(user.id as string | number).subscribe({
         next: () => {
           this.successMessage = `User "${user.name}" approved successfully!`;
           this.loadPendingUsers();
@@ -64,7 +65,7 @@ export class AdminApprovalComponent implements OnInit {
     if (!user.id) return;
 
     if (confirm(`Delete user "${user.name}" (${user.email})? This action cannot be undone.`)) {
-      this.authService.deleteUser(user.id).subscribe({
+      this.authService.deleteUser(user.id as string | number).subscribe({
         next: () => {
           this.successMessage = `User "${user.name}" deleted successfully!`;
           this.loadPendingUsers();

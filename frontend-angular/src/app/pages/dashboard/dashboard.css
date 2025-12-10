@@ -1,0 +1,12 @@
+/* dashboard.css */
+:root {
+  --panel-radius: 0.75rem;
+}
+
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+@media (min-width: 640px) {
+  /* ensure header actions align on larger screens */
+}

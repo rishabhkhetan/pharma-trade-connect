@@ -3,52 +3,97 @@
   <header class="bg-white shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center">
+        <!-- Left -->
         <div>
           <h1 class="text-2xl font-bold text-gray-900">PharmaTrade Connect</h1>
           <p class="text-sm text-gray-600 mt-1">Welcome, {{ currentUser?.name }}!</p>
         </div>
-        <button
-          (click)="logout()"
-          class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
-        >
-          Logout
-        </button>
+
+        <!-- Right: Cart + Logout -->
+        <div class="flex items-center space-x-4">
+
+          <!-- CART BUTTON -->
+          <button
+            (click)="goToCart()"
+            class="relative bg-white border border-gray-200 px-3 py-2 rounded-md hover:shadow-sm flex items-center"
+          >
+            <svg class="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 8h14l-2-8M10 21a1 1 0 11-2 0 1 1 0 012 0zm8 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+            </svg>
+
+            <span class="text-sm font-medium">Cart</span>
+
+            <!-- BADGE -->
+            <span
+              *ngIf="cartCount > 0"
+              class="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"
+            >
+              {{ cartCount }}
+            </span>
+          </button>
+
+          <!-- PRODUCTS LINK (Desktop Only) -->
+          <a
+            routerLink="/products"
+            class="hidden sm:inline-block bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+          >
+            Products
+          </a>
+
+          <!-- LOGOUT -->
+          <button
+            (click)="logout()"
+            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-medium"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- MAIN CONTENT -->
   <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-    <div class="bg-white rounded-lg shadow-md p-8">
-      <!-- Welcome Section -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-4">
-          <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
+    <div class="bg-white rounded-lg shadow-md p-6">
+
+      <!-- Welcome -->
+      <div class="md:flex md:items-center md:justify-between mb-6">
+        <div class="flex items-center space-x-4">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Welcome Back!</h2>
+            <p class="text-gray-600">You're logged in as <strong>{{ currentUser?.role }}</strong></p>
+          </div>
         </div>
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back!</h2>
-        <p class="text-gray-600">You're logged in as <strong>{{ currentUser?.role }}</strong></p>
       </div>
 
       <!-- User Info Card -->
       <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-6 border border-blue-100">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Account Details</h3>
-        <div class="space-y-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div class="flex justify-between">
             <span class="text-gray-600">Full Name:</span>
             <span class="font-medium text-gray-900">{{ currentUser?.name }}</span>
           </div>
+
           <div class="flex justify-between">
             <span class="text-gray-600">Email:</span>
             <span class="font-medium text-gray-900">{{ currentUser?.email }}</span>
           </div>
+
           <div class="flex justify-between">
             <span class="text-gray-600">Role:</span>
             <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
               {{ currentUser?.role }}
             </span>
           </div>
+
           <div class="flex justify-between">
             <span class="text-gray-600">Account Status:</span>
             <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
@@ -59,50 +104,66 @@
       </div>
 
       <!-- Quick Actions -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Orders -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-center mb-4">
             <div class="p-3 bg-blue-100 rounded-lg">
               <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
               </svg>
             </div>
             <h4 class="ml-4 text-lg font-semibold text-gray-900">Orders</h4>
           </div>
           <p class="text-gray-600 text-sm">View and manage your orders</p>
-          <button class="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-            Coming Soon
-          </button>
+          <div class="mt-4">
+            <a routerLink="/orders"
+              class="w-full inline-block text-center bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+              Orders
+            </a>
+          </div>
         </div>
 
+        <!-- Products -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-center mb-4">
             <div class="p-3 bg-green-100 rounded-lg">
               <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"></path>
               </svg>
             </div>
             <h4 class="ml-4 text-lg font-semibold text-gray-900">Products</h4>
           </div>
           <p class="text-gray-600 text-sm">Browse pharmaceutical products</p>
-          <button class="mt-4 w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
-            Coming Soon
-          </button>
+          <div class="mt-4">
+            <a
+              routerLink="/products"
+              class="w-full inline-block text-center bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+              Open Products
+            </a>
+          </div>
         </div>
 
+        <!-- Reports -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-center mb-4">
             <div class="p-3 bg-purple-100 rounded-lg">
               <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z"/>
               </svg>
             </div>
             <h4 class="ml-4 text-lg font-semibold text-gray-900">Reports</h4>
           </div>
           <p class="text-gray-600 text-sm">View sales and analytics</p>
-          <button class="mt-4 w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
-            Coming Soon
-          </button>
+          <div class="mt-4">
+            <a class="w-full inline-block text-center bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+              Coming Soon
+            </a>
+          </div>
         </div>
       </div>
 
@@ -112,6 +173,7 @@
           <strong>Status:</strong> Your dashboard is ready! More features will be added soon.
         </p>
       </div>
+
     </div>
   </main>
 </div>
