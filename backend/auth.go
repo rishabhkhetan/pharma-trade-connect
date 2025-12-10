@@ -18,30 +18,48 @@ func signupHandler(c *gin.Context) {
 	role := c.PostForm("role")
 	company := c.PostForm("company_name")
 
-	file, err := c.FormFile("license")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "License PDF is required"})
-		return
-	}
+	var savePath string
 
-	filename := fmt.Sprintf("%d_%s", time.Now().Unix(), filepath.Base(file.Filename))
-	savePath := filepath.Join("uploads", filename)
-	if err := c.SaveUploadedFile(file, savePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-		return
+	// --- LOGIC CHANGE: Only require license if NOT Admin ---
+	if role == "ADMIN" {
+		savePath = "" // Admins don't need a license
+	} else {
+		// For Retailers and Clinics, the file is MANDATORY
+		file, err := c.FormFile("license")
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "License PDF is required for Retailers/Clinics"})
+			return
+		}
+
+		// Save the file
+		filename := fmt.Sprintf("%d_%s", time.Now().Unix(), filepath.Base(file.Filename))
+		savePath = filepath.Join("uploads", filename)
+		if err := c.SaveUploadedFile(file, savePath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+			return
+		}
 	}
+	// -------------------------------------------------------
 
 	hashed, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
 
-	_, err = db.Exec(`INSERT INTO users (email, password_hash, role, company_name, license_url, is_approved) 
-		VALUES ($1, $2, $3, $4, $5, FALSE)`, email, string(hashed), role, company, savePath)
+	// Insert into DB (is_approved defaults to TRUE for Admin, FALSE for others)
+	// Logic: If role is ADMIN, approved = TRUE. If not, approved = FALSE.
+	isApproved := (role == "ADMIN")
+
+	_, err := db.Exec(`INSERT INTO users (email, password_hash, role, company_name, license_url, is_approved) 
+		VALUES ($1, $2, $3, $4, $5, $6)`, email, string(hashed), role, company, savePath, isApproved)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Email already exists"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Signup successful. Wait for Admin approval."})
+	if role == "ADMIN" {
+		c.JSON(http.StatusCreated, gin.H{"message": "Admin created successfully. You can login now."})
+	} else {
+		c.JSON(http.StatusCreated, gin.H{"message": "Signup successful. Wait for Admin approval."})
+	}
 }
 
 // POST /api/login
@@ -55,6 +73,7 @@ func loginHandler(c *gin.Context) {
 	var user User
 	var storedHash string
 
+	// We also fetch 'is_approved' to stop pending users
 	err := db.QueryRow("SELECT id, email, role, password_hash, is_approved FROM users WHERE email=$1", req.Email).
 		Scan(&user.ID, &user.Email, &user.Role, &storedHash, &user.IsApproved)
 
@@ -68,6 +87,7 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
+	// Logic: Admins are always allowed. Retailers must be approved.
 	if user.Role != "ADMIN" && !user.IsApproved {
 		c.JSON(http.StatusForbidden, gin.H{"error": "Account pending approval from Admin"})
 		return
