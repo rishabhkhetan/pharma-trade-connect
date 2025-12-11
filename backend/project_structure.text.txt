@@ -1,0 +1,14 @@
+pharmatrade/
+├── config.go          <-- Stores constants like Secret Key and DB URL
+├── database.go        <-- Handles Database Connection
+├── models.go          <-- Stores all Structs (User, Product, etc.)
+├── middleware.go      <-- Stores the Auth Middleware
+├── auth.go            <-- Login and Signup APIs
+├── products.go        <-- Product related APIs
+├── orders.go          <-- Order related APIs
+├── admin.go           <-- Admin related APIs
+├── main.go            <-- The starting point (Router setup)
+├── go.mod             <-- Go Module definition (Dependencies)
+├── go.sum             <-- Checksums for dependencies
+├── project_structure.txt <-- This documentation file
+└── uploads/           <-- Folder for License PDFs
