@@ -27,3 +27,10 @@ type Product struct {
 	Price float64 `json:"price"`
 	Stock int     `json:"stock_quantity"`
 }
+
+// Add this struct to models.go
+type ProductRequest struct {
+	Name  string  `json:"name" binding:"required"`
+	Price float64 `json:"price" binding:"required"`
+	Stock int     `json:"stock_quantity" binding:"required"`
+}
