@@ -78,9 +78,9 @@ export default function CartPage() {
 
           <button
             className="mt-6 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            onClick={() => (window.location.href = "/dashboard")}
+            onClick={() => (window.location.href = "/retailer")}
           >
-            Back to Dashboard
+            Back to Prodcuts
           </button>
         </div>
       </div>

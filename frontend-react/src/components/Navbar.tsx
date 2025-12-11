@@ -7,7 +7,8 @@ export default function Navbar({ cartCount }: { cartCount: number }) {
         <h1 className="text-xl font-bold text-blue-600">PharmaTrade</h1>
 
         <div className="flex gap-6 items-center">
-          <Link to="/dashboard" className="text-gray-700 hover:text-blue-600">
+          {/* FIXED HOME ROUTE */}
+          <Link to="/retailer" className="text-gray-700 hover:text-blue-600">
             Home
           </Link>
 

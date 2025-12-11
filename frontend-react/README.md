@@ -1,107 +1,220 @@
 
-# ✅ **Pull Request: Retailer Login + Dashboard (Frontend Implementation)**
+# 📦 **PharmaTrade Connect — Full Stack B2B Medicine Ordering Platform**
 
-### **Summary**
+PharmaTrade Connect is a full-stack web platform designed for **Admins** and **Retailers** to manage medicine inventory, handle retailer onboarding, and place orders smoothly.
 
-This PR adds the full **Retailer Authentication UI**, including Login + Signup flow, form validations, license document upload, and role-based redirection.
-Additionally, it includes a **Retailer Dashboard (mock data)** with product listing, cart system, and routing structure.
+This project includes:
 
----
-
-## 🔧 **What’s Included**
-
-### **1. Authentication (Login + Signup)**
-
-* Login form with email + password
-* Signup form for retailer with:
-
-  * Full name
-  * Email & password
-  * Confirm password
-  * Password validation (uppercase, digit, symbol, min 8 chars)
-  * License number (required)
-  * License document upload (PDF/Image)
-* Role toggle: only **Retailer** available in signup
-* Role selection in login (Admin / Retailer)
-* Redirect after login based on role:
-
-  * `/admin`
-  * `/retailer`
+* ✅ **Admin Dashboard** (Inventory, Orders, Retailer Requests)
+* ✅ **Retailer Dashboard** (View products, add to cart, checkout)
+* ✅ **Authentication System** (Login as Admin or Retailer)
+* ✅ **Retailer Signup with License Upload**
+* ✅ **Protected Routes** for Admin & Retailer
+* ✅ **Cart & Order Flow** with UI enhancements
 
 ---
 
-### **2. Retailer Dashboard (Phase-1 UI)**
+## 🚀 **Tech Stack**
 
-* Product listing using mock data
-* Add to Cart button
-* Visual indication when a product is already added (highlight + “Added ✓”)
-* Cart stored in `localStorage`
-* Navbar with:
+### **Frontend**
 
-  * Home
-  * Cart (showing item count badge)
-  * Logout button
-* Routing:
+* React + TypeScript
+* Vite
+* Tailwind CSS
+* React Router DOM
 
-  * `/dashboard` → Retailer Dashboard
-  * `/cart` → Cart Page
+### **Backend**
 
----
-
-### **3. Cart Page**
-
-* Quantity update
-* Remove item
-* Auto-calculated totals
-* Delivery charge added (₹27)
-* “Place Order” mock success screen
+* Node.js / Express
+* JWT Authentication
+* Multer for file uploads
+* PostgreSQL / MongoDB (depends on your backend setup)
 
 ---
 
-## 📁 **Folder Structure Changes**
+# 🔧 **Project Setup**
+
+## 1️⃣ **Install Dependencies**
+
+```sh
+npm install
+```
+
+## 2️⃣ **Start Frontend (Vite)**
+
+```sh
+npm run dev
+```
+
+Frontend runs at:
+👉 **[http://localhost:5173](http://localhost:5173)**
+
+## 3️⃣ **Start Backend**
+
+```sh
+npm start
+```
+
+Backend runs at:
+👉 **[http://localhost:8080](http://localhost:8080)**
+
+---
+
+# 🔐 **Authentication Flow**
+
+### **Login Modes**
+
+* **Admin Login** → Redirects to `/admin`
+* **Retailer Login** → Redirects to `/retailer`
+
+### **Signup**
+
+Signup is **only for Retailers** and requires:
+
+* Full Name
+* Email
+* Password
+* License Number
+* License File (PDF/PNG/JPG)
+
+Admin is created **manually or from backend only**.
+
+---
+
+# 🧭 **Frontend Routes**
+
+| Route             | Role     | Description         |
+| ----------------- | -------- | ------------------- |
+| `/`               | Public   | Login / Signup      |
+| `/retailer`       | Retailer | Products Dashboard  |
+| `/cart`           | Retailer | Cart & Checkout     |
+| `/admin`          | Admin    | Inventory Dashboard |
+| `/admin/orders`   | Admin    | Order History       |
+| `/admin/requests` | Admin    | Retailer Approvals  |
+
+---
+
+# 🛒 **Retailer Features**
+
+### ✔ Product Dashboard
+
+* View all available medicines
+* Add to cart
+* Product card turns green when added
+
+### ✔ Cart Page
+
+* Update quantity
+* Remove product
+* Delivery charge ₹27
+* Place order
+
+### ✔ Order Success Redirect
+
+After order success → redirect to `/retailer` without logging out.
+
+---
+
+# 🛠 Admin Features
+
+### ✔ Inventory Management
+
+* View medicines
+* Stock levels
+* Status badges (Low, Out of Stock)
+
+### ✔ Order History
+
+* Order record table
+
+### ✔ Retailer Requests
+
+* Approve / Reject retailers
+* Revoke access
+
+---
+
+# 📁 **Project Folder Structure**
 
 ```
 src/
- ├─ pages/
- │   ├─ Login.tsx
- │   ├─ RetailerDashboard.tsx
- │   └─ CartPage.tsx
- ├─ components/
- │   └─ Navbar.tsx
- ├─ App.tsx (routing setup)
+ ├── components/
+ │   ├── ui/
+ │   │   ├── Sidebar.tsx
+ │   │   ├── NavItem.tsx
+ │   │   ├── AnimatedContainer.tsx
+ │   │   ├── Skeleton.tsx
+ │   │   ├── GlassCard.tsx
+ │   │   ├── PageHeader.tsx
+ │   ├── functional/
+ │       ├── InventoryTable.tsx
+ │       ├── OrderHistoryTable.tsx
+ │       ├── RequestsTable.tsx
+ │
+ ├── pages/
+ │   ├── Login.tsx
+ │   ├── RetailerDashboard.tsx
+ │   ├── CartPage.tsx
+ │   ├── admin/
+ │       ├── AdminDashboard.tsx
+ │       ├── AdminInventory.tsx
+ │       ├── OrderHistory.tsx
+ │       ├── Requests.tsx
+ │
+ ├── App.tsx
+ └── main.tsx
 ```
 
 ---
 
-## 🧪 **Testing Instructions**
+# 🧪 **Testing Admin Login**
 
-1. Run the frontend:
+Use sample mock credentials:
 
-   ```
-   npm install
-   npm run dev
-   ```
-2. For now (until backend integration), simulate login using console:
+```
+Admin:
+email: admin@pharma.com
+password: Admin@123
+role: ADMIN
+```
 
-   ```js
-   localStorage.setItem("token", "TEST");
-   localStorage.setItem("user", JSON.stringify({ role: "RETAILER", is_approved: "YES" }));
-   ```
-3. Open:
+# 🧪 **Testing Retailer Login**
 
-   ```
-   http://localhost:5173/dashboard
-   ```
+Retailer must be approved by Admin.
 
 ---
 
-## 📝 **Next Steps (Backend Integration – Future PR)**
+# 🎯 Roadmap
 
-* Connect to `/login` and `/signup` API
-* Fetch products from `/api/products`
-* Send cart data to `/api/orders`
-* Handle stock validation from backend
+* Payment integration
+* Notifications for stock alerts
+* Reports & analytics
+* Multi-admin roles
 
 ---
 
-If you want, I can generate a more **short**, **detailed**, or **company-formal** version — just tell me!
+# 🤝 Contribution
+
+1. Create new branch
+2. Push changes
+3. Open Pull Request
+4. Add description and screenshots
+
+---
+
+# 📝 Example Pull Request Description
+
+```
+Added Admin Inventory Page + Sidebar Integration
+
+✔ Created AdminInventory.tsx
+✔ Added summary stat cards
+✔ Integrated InventoryTable component
+✔ Updated routing in App.tsx
+
+Next TODO:
+- Connect all tables to backend API
+- Add pagination and sorting
+```
+
+
